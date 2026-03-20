@@ -16,7 +16,7 @@ class ProductCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(22),
       child: Container(
         width: 190,
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(22),
@@ -35,22 +35,35 @@ class ProductCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(18),
               child: AspectRatio(
-                aspectRatio: 1,
+                aspectRatio: 1.05,
                 child: Image.network(product.imageUrl, fit: BoxFit.cover),
               ),
             ),
-            const SizedBox(height: 12),
-            Text(
-              product.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.title,
+            const SizedBox(height: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyle.title,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    product.categoryName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyle.label,
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 6),
-            Text(product.categoryName, style: AppTextStyle.label),
-            const Spacer(),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
                   '\$${product.price.toStringAsFixed(2)}',
@@ -62,8 +75,8 @@ class ProductCard extends StatelessWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
+                    horizontal: 8,
+                    vertical: 5,
                   ),
                   decoration: BoxDecoration(
                     color: const Color(0x1AFF6B35),
