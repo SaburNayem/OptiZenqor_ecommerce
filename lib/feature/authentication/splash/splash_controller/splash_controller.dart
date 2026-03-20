@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:optizenqor/app_route/app_route.dart';
 import 'package:optizenqor/feature/authentication/splash/splash_mode/splash_model.dart';
@@ -7,18 +5,18 @@ import 'package:optizenqor/feature/authentication/splash/splash_mode/splash_mode
 class SplashController {
   const SplashController();
 
-  SplashModel get splashData => const SplashModel(
-    title: 'OptiZenqor',
-    subtitle: 'Organize focus, habits, and daily flow in one place.',
+  SplashModel get content => const SplashModel(
+    title: 'OmniZara',
+    subtitle: 'Curated shopping for fashion, home, beauty, and more.',
   );
 
-  Future<void> goToHome(BuildContext context) async {
+  Future<void> navigateNext(BuildContext context) async {
     await Future<void>.delayed(const Duration(seconds: 2));
 
     if (!context.mounted) {
       return;
     }
 
-    Navigator.pushReplacementNamed(context, AppRoute.home);
+    Navigator.pushReplacementNamed(context, AppRoute.authChoice);
   }
 }

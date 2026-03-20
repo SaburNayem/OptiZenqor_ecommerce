@@ -5,10 +5,10 @@ import 'package:optizenqor/core/api_endpoint/api_endpoint.dart';
 import 'package:optizenqor/http_mathod/service_model/service_model.dart';
 
 class NetworkService {
-  NetworkService({HttpClient? httpClient, this.baseUrl = ApiEndpoint.baseUrl})
-    : _httpClient = httpClient ?? HttpClient();
+  NetworkService({HttpClient? client, this.baseUrl = ApiEndpoint.baseUrl})
+    : _client = client ?? HttpClient();
 
-  final HttpClient _httpClient;
+  final HttpClient _client;
   final String baseUrl;
 
   Future<ServiceModel<dynamic>> get(
@@ -78,14 +78,12 @@ class NetworkService {
   }) async {
     try {
       final Uri uri = Uri.parse('$baseUrl$endpoint');
-      final HttpClientRequest request = await _httpClient.openUrl(method, uri);
-
+      final HttpClientRequest request = await _client.openUrl(method, uri);
       final Map<String, String> requestHeaders = <String, String>{
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         ...?headers,
       };
-
       requestHeaders.forEach(request.headers.set);
 
       if (body != null) {
@@ -93,28 +91,22 @@ class NetworkService {
       }
 
       final HttpClientResponse response = await request.close();
-      final String rawResponse = await response.transform(utf8.decoder).join();
-      final dynamic decoded = rawResponse.isEmpty
-          ? null
-          : jsonDecode(rawResponse);
+      final String raw = await response.transform(utf8.decoder).join();
+      final dynamic data = raw.isEmpty ? null : jsonDecode(raw);
 
       return ServiceModel<dynamic>(
         success: response.statusCode >= 200 && response.statusCode < 300,
         statusCode: response.statusCode,
-        message: _resolveMessage(decoded, response.statusCode),
-        data: decoded,
+        message: data is Map<String, dynamic> && data['message'] is String
+            ? data['message'] as String
+            : 'Request completed',
+        data: data,
       );
     } on SocketException {
       return const ServiceModel<dynamic>(
         success: false,
         statusCode: 0,
         message: 'No internet connection',
-      );
-    } on FormatException {
-      return const ServiceModel<dynamic>(
-        success: false,
-        statusCode: 0,
-        message: 'Invalid response format',
       );
     } catch (error) {
       return ServiceModel<dynamic>(
@@ -123,17 +115,5 @@ class NetworkService {
         message: error.toString(),
       );
     }
-  }
-
-  String _resolveMessage(dynamic decoded, int statusCode) {
-    if (decoded is Map<String, dynamic> && decoded['message'] is String) {
-      return decoded['message'] as String;
-    }
-
-    if (statusCode >= 200 && statusCode < 300) {
-      return 'Request completed successfully';
-    }
-
-    return 'Request failed';
   }
 }
