@@ -48,6 +48,33 @@ class _ShopScreenState extends State<ShopScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoute.categories);
+                    },
+                    child: const Text('Categories'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Offer page ready to add next'),
+                        ),
+                      );
+                    },
+                    child: const Text('Offer'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
             TextField(
               controller: _searchController,
               onChanged: _search,

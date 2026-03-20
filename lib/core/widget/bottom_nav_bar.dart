@@ -16,20 +16,64 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: currentIndex,
-      onDestinationSelected: onTap,
-      backgroundColor: Colors.white,
-      indicatorColor: const Color(0x1AFF6B35),
-      destinations: items
-          .map(
-            (NavigationItemModel item) => NavigationDestination(
-              icon: Icon(item.icon, color: AppColor.textSecondary),
-              selectedIcon: Icon(item.icon, color: AppColor.accent),
-              label: item.label,
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColor.primary,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: Color(0x22000000),
+            blurRadius: 24,
+            offset: Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List<Widget>.generate(items.length, (int index) {
+          final NavigationItemModel item = items[index];
+          final bool isActive = currentIndex == index;
+
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => onTap(index),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOut,
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: isActive ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      item.icon,
+                      size: 24,
+                      color: isActive ? AppColor.primary : Colors.white70,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: isActive ? AppColor.primary : Colors.white70,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          )
-          .toList(),
+          );
+        }),
+      ),
     );
   }
 }

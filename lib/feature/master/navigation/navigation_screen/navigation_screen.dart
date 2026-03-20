@@ -14,11 +14,19 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   late int _currentIndex;
   final NavigationController _controller = const NavigationController();
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
+    _pageController = PageController(initialPage: widget.initialIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -27,7 +35,20 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final items = _controller.items;
 
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: pages),
+      extendBody: true,
+      body: SafeArea(
+        bottom: false,
+        child: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: pages,
+          onPageChanged: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+        ),
+      ),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: _currentIndex,
         items: items,
@@ -35,6 +56,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           setState(() {
             _currentIndex = index;
           });
+          _pageController.jumpToPage(index);
         },
       ),
     );
