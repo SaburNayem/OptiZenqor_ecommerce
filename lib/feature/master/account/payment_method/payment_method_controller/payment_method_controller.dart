@@ -1,0 +1,3 @@
+class PaymentMethodController {
+  const PaymentMethodController();
+}

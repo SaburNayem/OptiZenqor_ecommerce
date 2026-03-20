@@ -5,6 +5,7 @@ import 'package:optizenqor/core/constant/text_style.dart';
 import 'package:optizenqor/core/widget/button_widget.dart';
 import 'package:optizenqor/core/widget/custom_appbar.dart';
 import 'package:optizenqor/feature/master/cart/cart_controller/cart_controller.dart';
+import 'package:optizenqor/feature/master/cart/cart_model/cart_model.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -12,8 +13,8 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartController controller = CartController();
-    final data = controller.data;
-    final total = controller.calculateTotal(data.items);
+    final CartModel data = controller.data;
+    final double total = controller.calculateTotal(data.items);
 
     return Scaffold(
       appBar: const AppCustomAppBar(title: 'Cart'),
@@ -113,10 +114,10 @@ class CartScreen extends StatelessWidget {
                   AppButton(
                     title: 'Checkout',
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Checkout flow ready to connect'),
-                        ),
+                      Navigator.pushNamed(
+                        context,
+                        AppRoute.checkout,
+                        arguments: data.items,
                       );
                     },
                   ),

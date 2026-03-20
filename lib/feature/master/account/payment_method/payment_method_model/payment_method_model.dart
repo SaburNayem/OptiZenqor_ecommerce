@@ -1,0 +1,3 @@
+class PaymentMethodModel {
+  const PaymentMethodModel();
+}

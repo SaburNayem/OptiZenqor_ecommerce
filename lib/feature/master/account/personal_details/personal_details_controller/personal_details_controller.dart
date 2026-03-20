@@ -1,0 +1,3 @@
+class PersonalDetailsController {
+  const PersonalDetailsController();
+}

@@ -1,0 +1,3 @@
+class PersonalDetailsModel {
+  const PersonalDetailsModel();
+}

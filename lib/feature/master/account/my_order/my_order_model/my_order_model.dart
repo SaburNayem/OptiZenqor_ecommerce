@@ -1,0 +1,3 @@
+class MyOrderModel {
+  const MyOrderModel();
+}

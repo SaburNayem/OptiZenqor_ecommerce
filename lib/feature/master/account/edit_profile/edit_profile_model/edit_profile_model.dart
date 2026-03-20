@@ -1,0 +1,3 @@
+class EditProfileModel {
+  const EditProfileModel();
+}

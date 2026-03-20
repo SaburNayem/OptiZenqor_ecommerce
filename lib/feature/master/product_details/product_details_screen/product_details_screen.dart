@@ -5,6 +5,7 @@ import 'package:optizenqor/core/constant/text_style.dart';
 import 'package:optizenqor/core/widget/button_widget.dart';
 import 'package:optizenqor/core/widget/custom_appbar.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_controller/product_details_controller.dart';
+import 'package:optizenqor/feature/master/product_details/product_details_model/cart_item_model.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_model/product_model.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -78,6 +79,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             _addReply(reviewId, message);
           });
         },
+      ),
+    );
+  }
+
+  List<CartItemModel> get _checkoutItems => <CartItemModel>[
+    CartItemModel(product: widget.product, quantity: _quantity),
+  ];
+
+  void _openCheckout() {
+    Navigator.pushNamed(
+      context,
+      AppRoute.checkout,
+      arguments: _checkoutItems,
+    );
+  }
+
+  void _addToCart() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${widget.product.name} x$_quantity added to cart'),
       ),
     );
   }
@@ -283,13 +304,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   Expanded(
                     child: AppButton(
                       title: 'Checkout',
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          AppRoute.mainShell,
-                          arguments: 3,
-                        );
-                      },
+                      onPressed: _openCheckout,
                     ),
                   ),
                 ],
@@ -301,35 +316,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     child: AppButton(
                       title: 'Add Cart',
                       isOutlined: true,
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              '${widget.product.name} x$_quantity added to cart',
-                            ),
-                          ),
-                        );
-                      },
+                      onPressed: _addToCart,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: AppButton(
                       title: 'Buy',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Proceeding to buy ${widget.product.name}',
-                            ),
-                          ),
-                        );
-                        Navigator.pushNamed(
-                          context,
-                          AppRoute.mainShell,
-                          arguments: 3,
-                        );
-                      },
+                      onPressed: _openCheckout,
                     ),
                   ),
                 ],

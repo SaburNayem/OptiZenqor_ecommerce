@@ -1,0 +1,3 @@
+class ReviewController {
+  const ReviewController();
+}

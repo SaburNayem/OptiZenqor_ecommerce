@@ -1,0 +1,3 @@
+class DeliveryAddressModel {
+  const DeliveryAddressModel();
+}

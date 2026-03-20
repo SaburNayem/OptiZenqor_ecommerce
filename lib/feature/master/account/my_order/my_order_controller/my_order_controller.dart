@@ -1,0 +1,3 @@
+class MyOrderController {
+  const MyOrderController();
+}

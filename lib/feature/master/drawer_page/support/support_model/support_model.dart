@@ -1,0 +1,3 @@
+class SupportModel {
+  const SupportModel();
+}
