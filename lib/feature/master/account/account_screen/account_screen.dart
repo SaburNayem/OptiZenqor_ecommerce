@@ -40,13 +40,6 @@ class AccountScreen extends StatelessWidget {
           ),
         );
         return;
-      case 'Wishlist':
-        Navigator.pushNamed(
-          context,
-          AppRoute.mainShell,
-          arguments: 2,
-        );
-        return;
       case 'Delivery Address':
         Navigator.push(
           context,
@@ -1127,64 +1120,6 @@ class _AccountActionDetailsScreen extends StatelessWidget {
             ],
           ),
         ];
-      case 'Follower':
-        return <Widget>[
-          const _InfoCard(
-            title: 'Following',
-            children: <Widget>[
-              _ActionRow(
-                icon: Icons.storefront_outlined,
-                title: 'Glow Beauty',
-                subtitle: 'New skincare drops every Friday.',
-              ),
-              _ActionRow(
-                icon: Icons.checkroom_outlined,
-                title: 'Urban Wear',
-                subtitle: 'Streetwear and daily essentials collection.',
-              ),
-              _ActionRow(
-                icon: Icons.devices_other_outlined,
-                title: 'Tech Nest',
-                subtitle: 'Followed for gadget launches and quick deals.',
-              ),
-            ],
-          ),
-        ];
-      case 'Voucher':
-        return <Widget>[
-          const _InfoCard(
-            title: 'Available Vouchers',
-            children: <Widget>[
-              _VoucherTile(
-                title: 'SAVE10',
-                subtitle: 'Get 10% off on orders above \$30',
-                accent: Color(0xFF0D47A1),
-              ),
-              _VoucherTile(
-                title: 'FREESHIP',
-                subtitle: 'Free delivery on your next checkout',
-                accent: Color(0xFF00695C),
-              ),
-              _VoucherTile(
-                title: 'BEAUTY15',
-                subtitle: '15% off on beauty and personal care products',
-                accent: Color(0xFFE65100),
-              ),
-            ],
-          ),
-        ];
-      case 'Wishlist':
-        return <Widget>[
-          const _InfoCard(
-            title: 'Wishlist',
-            children: <Widget>[
-              Text(
-                'Your wishlist opens in the Favorite tab where all saved products are collected.',
-                style: AppTextStyle.body,
-              ),
-            ],
-          ),
-        ];
       default:
         return <Widget>[
           _InfoCard(
@@ -1731,58 +1666,6 @@ class _AddressTile extends StatelessWidget {
           Text(
             note,
             style: AppTextStyle.body.copyWith(color: Colors.black54),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _VoucherTile extends StatelessWidget {
-  const _VoucherTile({
-    required this.title,
-    required this.subtitle,
-    required this.accent,
-  });
-
-  final String title;
-  final String subtitle;
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: accent.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: accent,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(
-              Icons.local_offer_outlined,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 4),
-                Text(subtitle, style: AppTextStyle.body),
-              ],
-            ),
           ),
         ],
       ),

@@ -38,21 +38,6 @@ class AccountController {
         subtitle: 'Choose where you want to collect your packages.',
         icon: Icons.store_mall_directory_outlined,
       ),
-      AccountActionModel(
-        title: 'Follower',
-        subtitle: 'See stores and collections you are following.',
-        icon: Icons.people_outline,
-      ),
-      AccountActionModel(
-        title: 'Voucher',
-        subtitle: 'Browse saved coupons and available offers.',
-        icon: Icons.confirmation_number_outlined,
-      ),
-      AccountActionModel(
-        title: 'Wishlist',
-        subtitle: 'Open products you saved for later.',
-        icon: Icons.favorite_border_rounded,
-      ),
     ],
   );
 }

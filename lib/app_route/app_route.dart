@@ -8,9 +8,11 @@ import 'package:optizenqor/feature/authentication/splash/splash_screen/splash_sc
 import 'package:optizenqor/feature/authentication/verify_code/verify_code_screen/verify_code_screen.dart';
 import 'package:optizenqor/feature/master/categories/category_detail_screen/category_detail_screen.dart';
 import 'package:optizenqor/feature/master/categories/categories_screen/categories_screen.dart';
+import 'package:optizenqor/feature/master/cart/cart_screen/checkout_screen.dart';
 import 'package:optizenqor/feature/master/drawer_page/drawer_page_screen/drawer_page_screen.dart';
 import 'package:optizenqor/feature/master/navigation/navigation_screen/navigation_screen.dart';
 import 'package:optizenqor/feature/master/offer/offer_screen/offer_screen.dart';
+import 'package:optizenqor/feature/master/product_details/product_details_model/cart_item_model.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_model/category_model.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_model/product_model.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_screen/product_details_screen.dart';
@@ -31,6 +33,7 @@ class AppRoute {
   static const String offer = '/offer';
   static const String drawerPage = '/drawer-page';
   static const String productDetails = '/product-details';
+  static const String checkout = '/checkout';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -90,6 +93,10 @@ class AppRoute {
       case productDetails:
         final ProductModel product = settings.arguments! as ProductModel;
         return _buildRoute(ProductDetailsScreen(product: product), settings);
+      case checkout:
+        final List<CartItemModel> items =
+            settings.arguments! as List<CartItemModel>;
+        return _buildRoute(CheckoutScreen(items: items), settings);
       default:
         return _buildRoute(
           const Scaffold(body: Center(child: Text('Page not found'))),
