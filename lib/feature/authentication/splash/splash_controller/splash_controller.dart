@@ -17,6 +17,6 @@ class SplashController {
       return;
     }
 
-    Navigator.pushReplacementNamed(context, AppRoute.authChoice);
+    Navigator.pushReplacementNamed(context, AppRoute.onboarding);
   }
 }

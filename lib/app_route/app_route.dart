@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:optizenqor/feature/authentication/auth_choice/auth_choice_screen/auth_choice_screen.dart';
 import 'package:optizenqor/feature/authentication/forgot_password/forgot_password_screen/forgot_password_screen.dart';
+import 'package:optizenqor/feature/authentication/onboarding/onboarding_screen/onboarding_screen.dart';
 import 'package:optizenqor/feature/authentication/reset_password/reset_password_screen/reset_password_screen.dart';
 import 'package:optizenqor/feature/authentication/sign_in/sign_in_screen/sign_in_screen.dart';
 import 'package:optizenqor/feature/authentication/sign_up/sign_up_screen/sign_up_screen.dart';
@@ -22,6 +23,7 @@ class AppRoute {
 
   static const String splash = '/';
   static const String authChoice = '/auth-choice';
+  static const String onboarding = '/onboarding';
   static const String signIn = '/sign-in';
   static const String signUp = '/sign-up';
   static const String forgotPassword = '/forgot-password';
@@ -41,6 +43,8 @@ class AppRoute {
         return _buildRoute(const SplashScreen(), settings);
       case authChoice:
         return _buildRoute(const AuthChoiceScreen(), settings);
+      case onboarding:
+        return _buildRoute(const OnboardingScreen(), settings);
       case signIn:
         return _buildRoute(const SignInScreen(), settings);
       case signUp:
@@ -53,7 +57,22 @@ class AppRoute {
           settings,
         );
       case resetPassword:
-        return _buildRoute(const ResetPasswordScreen(), settings);
+        String? account;
+        bool fromAccount = false;
+
+        if (settings.arguments is String) {
+          account = settings.arguments! as String;
+        } else if (settings.arguments is Map<String, dynamic>) {
+          final Map<String, dynamic> args =
+              settings.arguments! as Map<String, dynamic>;
+          account = args['account'] as String?;
+          fromAccount = args['fromAccount'] as bool? ?? false;
+        }
+
+        return _buildRoute(
+          ResetPasswordScreen(account: account, fromAccount: fromAccount),
+          settings,
+        );
       case mainShell:
         int initialIndex = 0;
         String? initialQuery;

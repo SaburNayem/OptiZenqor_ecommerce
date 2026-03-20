@@ -1,0 +1,3 @@
+class PickupPointModel {
+  const PickupPointModel();
+}

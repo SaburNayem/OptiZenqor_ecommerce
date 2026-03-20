@@ -6,7 +6,14 @@ import 'package:optizenqor/core/widget/text_field_widget.dart';
 import 'package:optizenqor/feature/authentication/reset_password/reset_password_controller/reset_password_controller.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  const ResetPasswordScreen({
+    this.account,
+    this.fromAccount = false,
+    super.key,
+  });
+
+  final String? account;
+  final bool fromAccount;
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -14,6 +21,8 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _currentPasswordController =
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -22,6 +31,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   void dispose() {
+    _currentPasswordController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -53,6 +63,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     ).showSnackBar(SnackBar(content: Text(result.message)));
 
     if (result.success) {
+      if (widget.fromAccount) {
+        Navigator.pop(context, true);
+        return;
+      }
+
       Navigator.pushNamedAndRemoveUntil(
         context,
         AppRoute.signIn,
@@ -64,6 +79,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final content = _controller.content;
+    final String subtitle = widget.fromAccount
+        ? 'Update your current account password below.'
+        : content.subtitle;
 
     return Scaffold(
       appBar: AppBar(),
@@ -77,8 +95,28 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               children: <Widget>[
                 Text(content.title, style: AppTextStyle.heading),
                 const SizedBox(height: 8),
-                Text(content.subtitle, style: AppTextStyle.body),
+                Text(subtitle, style: AppTextStyle.body),
+                if (widget.account != null) ...<Widget>[
+                  const SizedBox(height: 8),
+                  Text(widget.account!, style: AppTextStyle.label),
+                ],
                 const SizedBox(height: 28),
+                if (widget.fromAccount) ...<Widget>[
+                  AppTextField(
+                    controller: _currentPasswordController,
+                    label: 'Current password',
+                    hintText: 'Enter current password',
+                    obscureText: true,
+                    prefixIcon: Icons.lock_clock_outlined,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your current password';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 AppTextField(
                   controller: _passwordController,
                   label: 'New password',

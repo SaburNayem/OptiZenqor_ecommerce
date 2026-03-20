@@ -1,0 +1,3 @@
+class AboutUsController {
+  const AboutUsController();
+}

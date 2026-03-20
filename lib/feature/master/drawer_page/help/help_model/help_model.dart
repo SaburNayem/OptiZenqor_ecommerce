@@ -1,0 +1,3 @@
+class HelpModel {
+  const HelpModel();
+}

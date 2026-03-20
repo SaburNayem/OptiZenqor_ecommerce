@@ -1,0 +1,3 @@
+class OrderHistoryModel {
+  const OrderHistoryModel();
+}

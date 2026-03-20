@@ -1,0 +1,3 @@
+class HelpController {
+  const HelpController();
+}
