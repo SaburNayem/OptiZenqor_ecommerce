@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:optizenqor/app_route/app_route.dart';
-import 'package:optizenqor/core/constant/app_color.dart';
-import 'package:optizenqor/core/constant/text_style.dart';
 import 'package:optizenqor/core/widget/card_widget.dart';
 import 'package:optizenqor/core/widget/custom_appbar.dart';
 import 'package:optizenqor/feature/master/drawer/drawer_screen/drawer_screen.dart';
@@ -19,6 +17,8 @@ class _ShopScreenState extends State<ShopScreen> {
   final ShopController _controller = ShopController();
   final TextEditingController _searchController = TextEditingController();
   late List<ProductModel> _products;
+
+  bool get _hasSearchQuery => _searchController.text.trim().isNotEmpty;
 
   @override
   void initState() {
@@ -40,8 +40,6 @@ class _ShopScreenState extends State<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final data = _controller.data;
-
     return Scaffold(
       drawer: const MasterDrawerScreen(),
       appBar: const AppCustomAppBar(title: 'Shop'),
@@ -50,33 +48,35 @@ class _ShopScreenState extends State<ShopScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoute.categories);
-                    },
-                    child: const Text('Categories'),
+            if (!_hasSearchQuery) ...<Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoute.categories);
+                      },
+                      child: const Text('Categories'),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Offer page ready to add next'),
-                        ),
-                      );
-                    },
-                    child: const Text('Offer'),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Offer page ready to add next'),
+                          ),
+                        );
+                      },
+                      child: const Text('Offer'),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
+                ],
+              ),
+              const SizedBox(height: 18),
+            ],
             TextField(
               controller: _searchController,
               onChanged: _search,
@@ -86,31 +86,6 @@ class _ShopScreenState extends State<ShopScreen> {
               ),
             ),
             const SizedBox(height: 18),
-            SizedBox(
-              height: 42,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: data.categories.length,
-                separatorBuilder: (BuildContext context, int index) =>
-                    const SizedBox(width: 10),
-                itemBuilder: (BuildContext context, int index) {
-                  final category = data.categories[index];
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(999),
-                      border: Border.all(color: AppColor.border),
-                    ),
-                    child: Text(category.name, style: AppTextStyle.body),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 22),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
