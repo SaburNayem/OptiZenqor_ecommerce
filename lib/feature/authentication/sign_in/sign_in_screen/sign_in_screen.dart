@@ -18,12 +18,30 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final SignInController _controller = SignInController();
   bool _isLoading = false;
+  bool _isBiometricLoading = false;
+  bool _canUseBiometrics = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBiometricsAvailability();
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadBiometricsAvailability() async {
+    final bool canUseBiometrics = await _controller.canCheckBiometrics();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _canUseBiometrics = canUseBiometrics;
+    });
   }
 
   Future<void> _submit() async {
@@ -46,6 +64,34 @@ class _SignInScreenState extends State<SignInScreen> {
 
     setState(() {
       _isLoading = false;
+    });
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(result.message)));
+
+    if (result.success) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoute.mainShell,
+        (Route<dynamic> route) => false,
+      );
+    }
+  }
+
+  Future<void> _authenticateWithFingerprint() async {
+    setState(() {
+      _isBiometricLoading = true;
+    });
+
+    final result = await _controller.authenticateWithBiometrics();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _isBiometricLoading = false;
     });
 
     ScaffoldMessenger.of(
@@ -114,12 +160,44 @@ class _SignInScreenState extends State<SignInScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoute.forgotPassword);
+                    },
+                    child: const Text('Forget Password'),
+                  ),
+                ),
+                const SizedBox(height: 8),
                 AppButton(
                   title: 'Log In',
                   onPressed: _submit,
                   isLoading: _isLoading,
                 ),
+                if (_canUseBiometrics) ...<Widget>[
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: _isBiometricLoading
+                        ? null
+                        : _authenticateWithFingerprint,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(54),
+                      side: const BorderSide(color: Colors.black12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    icon: _isBiometricLoading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.fingerprint_rounded),
+                    label: const Text('Use device fingerprint'),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () {

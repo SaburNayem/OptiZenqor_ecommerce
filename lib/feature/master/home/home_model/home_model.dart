@@ -6,9 +6,13 @@ class HomeModel {
     required this.categories,
     required this.featuredProducts,
     required this.trendingProducts,
+    required this.newArrivedProducts,
+    required this.bestForYouProducts,
   });
 
   final List<CategoryModel> categories;
   final List<ProductModel> featuredProducts;
   final List<ProductModel> trendingProducts;
+  final List<ProductModel> newArrivedProducts;
+  final List<ProductModel> bestForYouProducts;
 }

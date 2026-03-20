@@ -11,5 +11,7 @@ class HomeController {
     categories: _catalogService.getCategories(),
     featuredProducts: _catalogService.getFeaturedProducts(),
     trendingProducts: _catalogService.getProducts(),
+    newArrivedProducts: _catalogService.getProducts().reversed.take(4).toList(),
+    bestForYouProducts: _catalogService.getProducts().skip(1).take(4).toList(),
   );
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AccountModel {
   const AccountModel({
     required this.name,
@@ -7,5 +9,17 @@ class AccountModel {
 
   final String name;
   final String email;
-  final List<String> actions;
+  final List<AccountActionModel> actions;
+}
+
+class AccountActionModel {
+  const AccountActionModel({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
 }

@@ -164,7 +164,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           if (!_isSearchExpanded)
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        const _NotificationScreen(),
+                  ),
+                );
+              },
               icon: const Icon(Icons.notifications_none_rounded),
             ),
           if (!_isSearchExpanded)
@@ -183,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         children: <Widget>[
           SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 110),
+            padding: const EdgeInsets.only(bottom: 60),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -238,6 +246,66 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     itemBuilder: (BuildContext context, int index) {
                       final ProductModel product = data.popularProducts[index];
+                      return ProductCard(
+                        product: product,
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoute.productDetails,
+                            arguments: product,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text('New Arrived', style: AppTextStyle.heading),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 300,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: data.newArrivedProducts.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(width: 16);
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      final ProductModel product = data.newArrivedProducts[index];
+                      return ProductCard(
+                        product: product,
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoute.productDetails,
+                            arguments: product,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text('Best For You', style: AppTextStyle.heading),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 300,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: data.bestForYouProducts.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(width: 16);
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      final ProductModel product = data.bestForYouProducts[index];
                       return ProductCard(
                         product: product,
                         onTap: () {
@@ -446,17 +514,175 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+class _NotificationScreen extends StatefulWidget {
+  const _NotificationScreen();
+
+  @override
+  State<_NotificationScreen> createState() => _NotificationScreenState();
+}
+
+class _NotificationScreenState extends State<_NotificationScreen> {
+  late final List<_NotificationItem> _notifications;
+
+  @override
+  void initState() {
+    super.initState();
+    _notifications = <_NotificationItem>[
+      const _NotificationItem(
+        id: 'order-shipped',
+        title: 'Order shipped',
+        message: 'Your Face Cleanser order is on the way.',
+        time: '10 min ago',
+        icon: Icons.local_shipping_outlined,
+        color: Colors.orange,
+      ),
+      const _NotificationItem(
+        id: 'flash-sale',
+        title: 'Flash sale is live',
+        message: 'Up to 30% off selected beauty and gadget items today.',
+        time: '1 hour ago',
+        icon: Icons.local_offer_outlined,
+        color: Colors.redAccent,
+      ),
+      const _NotificationItem(
+        id: 'payment-received',
+        title: 'Payment received',
+        message: 'We received your payment for Product 2 successfully.',
+        time: 'Yesterday',
+        icon: Icons.payments_outlined,
+        color: Colors.green,
+      ),
+      const _NotificationItem(
+        id: 'review-reminder',
+        title: 'Review reminder',
+        message: 'Share your feedback for Perfume and help other shoppers.',
+        time: '2 days ago',
+        icon: Icons.rate_review_outlined,
+        color: AppColor.primary,
+      ),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Notifications')),
+      body: _notifications.isEmpty
+          ? const Center(child: Text('No notifications available'))
+          : ListView.separated(
+              padding: const EdgeInsets.all(20),
+              itemCount: _notifications.length,
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(height: 12);
+              },
+              itemBuilder: (BuildContext context, int index) {
+                final _NotificationItem item = _notifications[index];
+                return Dismissible(
+                  key: ValueKey<String>(item.id),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.delete_outline, color: Colors.white),
+                  ),
+                  onDismissed: (DismissDirection direction) {
+                    setState(() {
+                      _notifications.removeAt(index);
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${item.title} deleted')),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColor.border),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: item.color.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Icon(item.icon, color: item.color),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                item.title,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(item.message, style: AppTextStyle.body),
+                              const SizedBox(height: 8),
+                              Text(
+                                item.time,
+                                style: AppTextStyle.label.copyWith(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+    );
+  }
+}
+
+class _NotificationItem {
+  const _NotificationItem({
+    required this.id,
+    required this.title,
+    required this.message,
+    required this.time,
+    required this.icon,
+    required this.color,
+  });
+
+  final String id;
+  final String title;
+  final String message;
+  final String time;
+  final IconData icon;
+  final Color color;
+}
+
 class HomeModelData {
   const HomeModelData({
     required this.topProducts,
     required this.featuredProducts,
     required this.popularProducts,
+    required this.newArrivedProducts,
+    required this.bestForYouProducts,
     required this.searchableProducts,
   });
 
   final List<ProductModel> topProducts;
   final List<ProductModel> featuredProducts;
   final List<ProductModel> popularProducts;
+  final List<ProductModel> newArrivedProducts;
+  final List<ProductModel> bestForYouProducts;
   final List<ProductModel> searchableProducts;
 
   factory HomeModelData.fromController(HomeController controller) {
@@ -469,6 +695,8 @@ class HomeModelData {
       topProducts: data.featuredProducts,
       featuredProducts: data.featuredProducts,
       popularProducts: data.trendingProducts,
+      newArrivedProducts: data.newArrivedProducts,
+      bestForYouProducts: data.bestForYouProducts,
       searchableProducts: searchableProducts,
     );
   }

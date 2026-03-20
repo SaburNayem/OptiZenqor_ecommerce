@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:optizenqor/app_route/app_route.dart';
 import 'package:optizenqor/core/constant/app_color.dart';
 import 'package:optizenqor/core/constant/text_style.dart';
 import 'package:optizenqor/core/widget/button_widget.dart';
@@ -17,7 +18,7 @@ class CartScreen extends StatelessWidget {
     return Scaffold(
       appBar: const AppCustomAppBar(title: 'Cart'),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
         child: Column(
           children: <Widget>[
             Expanded(
@@ -27,49 +28,59 @@ class CartScreen extends StatelessWidget {
                     const SizedBox(height: 14),
                 itemBuilder: (BuildContext context, int index) {
                   final item = data.items[index];
-                  return Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColor.border),
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
-                          child: Image.network(
-                            item.product.imageUrl,
-                            width: 72,
-                            height: 72,
-                            fit: BoxFit.cover,
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoute.productDetails,
+                        arguments: item.product,
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColor.border),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.network(
+                              item.product.imageUrl,
+                              width: 72,
+                              height: 72,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                item.product.name,
-                                style: AppTextStyle.title,
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                'Qty: ${item.quantity}',
-                                style: AppTextStyle.body,
-                              ),
-                            ],
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  item.product.name,
+                                  style: AppTextStyle.title,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Qty: ${item.quantity}',
+                                  style: AppTextStyle.body,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Text(
-                          '\$${item.product.price.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColor.accent,
+                          Text(
+                            '\$${item.product.price.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: AppColor.accent,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },

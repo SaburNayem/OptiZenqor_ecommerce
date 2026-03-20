@@ -22,7 +22,6 @@ class _ShopScreenState extends State<ShopScreen> {
   RangeValues _priceRange = const RangeValues(0, 50);
   double _minimumRating = 0;
   String _sortBy = 'default';
-  String _selectedCategoryId = 'all';
 
   bool get _hasSearchQuery => _searchController.text.trim().isNotEmpty;
 
@@ -58,12 +57,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
   List<ProductModel> _applyFilters(List<ProductModel> products) {
     return products.where((ProductModel product) {
-      final bool matchesCategory =
-          _selectedCategoryId == 'all' ||
-          product.categoryId == _selectedCategoryId;
-
-      return matchesCategory &&
-          product.price >= _priceRange.start &&
+      return product.price >= _priceRange.start &&
           product.price <= _priceRange.end &&
           product.rating >= _minimumRating;
     }).toList();
@@ -112,22 +106,12 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Future<void> _openFilterPanel() async {
-    final List<MapEntry<String, String>> categoryOptions =
-        <MapEntry<String, String>>[
-          const MapEntry<String, String>('all', 'All Categories'),
-          ..._controller.data.categories.map(
-            (category) => MapEntry<String, String>(category.id, category.name),
-          ),
-          const MapEntry<String, String>('featured', 'Featured'),
-        ];
-    RangeValues selectedPriceRange = _priceRange;
     double selectedRating = _minimumRating;
-    String selectedCategoryId = _selectedCategoryId;
     final TextEditingController minimumPriceController = TextEditingController(
-      text: selectedPriceRange.start.round().toString(),
+      text: _priceRange.start.round().toString(),
     );
     final TextEditingController maximumPriceController = TextEditingController(
-      text: selectedPriceRange.end.round().toString(),
+      text: _priceRange.end.round().toString(),
     );
 
     await showGeneralDialog<void>(
@@ -198,37 +182,6 @@ class _ShopScreenState extends State<ShopScreen> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         const Text(
-                                          'Categories',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Wrap(
-                                          spacing: 8,
-                                          runSpacing: 8,
-                                          children: categoryOptions.map((
-                                            MapEntry<String, String> category,
-                                          ) {
-                                            final bool isSelected =
-                                                selectedCategoryId ==
-                                                category.key;
-
-                                            return ChoiceChip(
-                                              label: Text(category.value),
-                                              selected: isSelected,
-                                              onSelected: (_) {
-                                                setModalState(() {
-                                                  selectedCategoryId =
-                                                      category.key;
-                                                });
-                                              },
-                                            );
-                                          }).toList(),
-                                        ),
-                                        const SizedBox(height: 18),
-                                        const Text(
                                           'Price Range',
                                           style: TextStyle(
                                             fontSize: 16,
@@ -266,31 +219,6 @@ class _ShopScreenState extends State<ShopScreen> {
                                               ),
                                             ),
                                           ],
-                                        ),
-                                        const SizedBox(height: 12),
-                                        Text(
-                                          'Price Range: \$${selectedPriceRange.start.round()} - \$${selectedPriceRange.end.round()}',
-                                        ),
-                                        RangeSlider(
-                                          values: selectedPriceRange,
-                                          min: 0,
-                                          max: 50,
-                                          divisions: 10,
-                                          labels: RangeLabels(
-                                            '\$${selectedPriceRange.start.round()}',
-                                            '\$${selectedPriceRange.end.round()}',
-                                          ),
-                                          onChanged: (RangeValues values) {
-                                            setModalState(() {
-                                              selectedPriceRange = values;
-                                              minimumPriceController.text =
-                                                  values.start
-                                                      .round()
-                                                      .toString();
-                                              maximumPriceController.text =
-                                                  values.end.round().toString();
-                                            });
-                                          },
                                         ),
                                         const SizedBox(height: 12),
                                         Text(
@@ -341,7 +269,6 @@ class _ShopScreenState extends State<ShopScreen> {
                                               50,
                                             );
                                             _minimumRating = 0;
-                                            _selectedCategoryId = 'all';
                                           });
                                           _refreshProducts();
                                           Navigator.pop(context);
@@ -384,8 +311,6 @@ class _ShopScreenState extends State<ShopScreen> {
                                               endPrice,
                                             );
                                             _minimumRating = selectedRating;
-                                            _selectedCategoryId =
-                                                selectedCategoryId;
                                           });
                                           _refreshProducts();
                                           Navigator.pop(context);
@@ -513,7 +438,7 @@ class _ShopScreenState extends State<ShopScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -533,11 +458,7 @@ class _ShopScreenState extends State<ShopScreen> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Offer page ready to add next'),
-                          ),
-                        );
+                        Navigator.pushNamed(context, AppRoute.offer);
                       },
                       child: const Text('Offer'),
                     ),

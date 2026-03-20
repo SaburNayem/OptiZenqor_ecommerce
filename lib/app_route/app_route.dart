@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:optizenqor/feature/authentication/auth_choice/auth_choice_screen/auth_choice_screen.dart';
+import 'package:optizenqor/feature/authentication/forgot_password/forgot_password_screen/forgot_password_screen.dart';
+import 'package:optizenqor/feature/authentication/reset_password/reset_password_screen/reset_password_screen.dart';
 import 'package:optizenqor/feature/authentication/sign_in/sign_in_screen/sign_in_screen.dart';
 import 'package:optizenqor/feature/authentication/sign_up/sign_up_screen/sign_up_screen.dart';
 import 'package:optizenqor/feature/authentication/splash/splash_screen/splash_screen.dart';
+import 'package:optizenqor/feature/authentication/verify_code/verify_code_screen/verify_code_screen.dart';
 import 'package:optizenqor/feature/master/categories/category_detail_screen/category_detail_screen.dart';
 import 'package:optizenqor/feature/master/categories/categories_screen/categories_screen.dart';
 import 'package:optizenqor/feature/master/drawer_page/drawer_page_screen/drawer_page_screen.dart';
 import 'package:optizenqor/feature/master/navigation/navigation_screen/navigation_screen.dart';
+import 'package:optizenqor/feature/master/offer/offer_screen/offer_screen.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_model/category_model.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_model/product_model.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_screen/product_details_screen.dart';
@@ -18,9 +22,13 @@ class AppRoute {
   static const String authChoice = '/auth-choice';
   static const String signIn = '/sign-in';
   static const String signUp = '/sign-up';
+  static const String forgotPassword = '/forgot-password';
+  static const String verifyCode = '/verify-code';
+  static const String resetPassword = '/reset-password';
   static const String mainShell = '/main-shell';
   static const String categories = '/categories';
   static const String categoryDetails = '/category-details';
+  static const String offer = '/offer';
   static const String drawerPage = '/drawer-page';
   static const String productDetails = '/product-details';
 
@@ -34,6 +42,15 @@ class AppRoute {
         return _buildRoute(const SignInScreen(), settings);
       case signUp:
         return _buildRoute(const SignUpScreen(), settings);
+      case forgotPassword:
+        return _buildRoute(const ForgotPasswordScreen(), settings);
+      case verifyCode:
+        return _buildRoute(
+          VerifyCodeScreen(account: settings.arguments as String?),
+          settings,
+        );
+      case resetPassword:
+        return _buildRoute(const ResetPasswordScreen(), settings);
       case mainShell:
         int initialIndex = 0;
         String? initialQuery;
@@ -56,6 +73,8 @@ class AppRoute {
         );
       case categories:
         return _buildRoute(const CategoriesScreen(), settings);
+      case offer:
+        return _buildRoute(const OfferScreen(), settings);
       case categoryDetails:
         final CategoryModel category = settings.arguments! as CategoryModel;
         return _buildRoute(
