@@ -2,17 +2,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:optizenqor/app.dart';
 
 void main() {
-  testWidgets('renders splash then home screen', (WidgetTester tester) async {
+  testWidgets('renders splash then auth choice screen', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const OptiZenqor());
 
-    expect(find.text('OptiZenqor'), findsOneWidget);
+    expect(find.text('OmniZara'), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 2));
     await tester.pumpAndSettle();
 
-    expect(find.text('Welcome to OptiZenqor'), findsOneWidget);
-    expect(find.text('Today Plan'), findsOneWidget);
-    expect(find.text('Habit Track'), findsOneWidget);
-    expect(find.text('Energy Check'), findsOneWidget);
+    expect(find.text('Shop smarter, every day'), findsOneWidget);
+    expect(find.text('Log In'), findsOneWidget);
+    expect(find.text('Create Account'), findsOneWidget);
   });
 }

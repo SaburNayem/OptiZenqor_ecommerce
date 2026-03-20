@@ -1,9 +1,12 @@
 class ApiEndpoint {
   ApiEndpoint._();
 
-  static const String baseUrl = 'https://example.com/api';
+  static const String baseUrl = 'https://api.omnizara.com';
 
-  static const String login = '/auth/login';
-  static const String profile = '/user/profile';
-  static const String dashboard = '/dashboard';
+  static const String signIn = '/auth/sign-in';
+  static const String signUp = '/auth/sign-up';
+  static const String products = '/products';
+  static const String categories = '/categories';
+  static const String cart = '/cart';
+  static const String favorite = '/favorite';
 }

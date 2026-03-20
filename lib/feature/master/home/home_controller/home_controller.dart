@@ -1,20 +1,15 @@
 import 'package:optizenqor/feature/master/home/home_model/home_model.dart';
+import 'package:optizenqor/http_mathod/network_service/catalog_service.dart';
 
 class HomeController {
-  const HomeController();
+  HomeController({CatalogService? catalogService})
+    : _catalogService = catalogService ?? const CatalogService();
 
-  List<HomeModel> get dashboardCards => const <HomeModel>[
-    HomeModel(
-      title: 'Today Plan',
-      description: 'Create a simple plan for your top three priorities.',
-    ),
-    HomeModel(
-      title: 'Habit Track',
-      description: 'Track repeat actions and keep daily consistency visible.',
-    ),
-    HomeModel(
-      title: 'Energy Check',
-      description: 'Review workload and protect your strongest focus blocks.',
-    ),
-  ];
+  final CatalogService _catalogService;
+
+  HomeModel get dashboardData => HomeModel(
+    categories: _catalogService.getCategories(),
+    featuredProducts: _catalogService.getFeaturedProducts(),
+    trendingProducts: _catalogService.getProducts(),
+  );
 }

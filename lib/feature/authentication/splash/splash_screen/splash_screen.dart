@@ -17,66 +17,64 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
+      if (mounted) {
+        _controller.navigateNext(context);
       }
-
-      _controller.goToHome(context);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final splashData = _controller.splashData;
+    final content = _controller.content;
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: <Color>[AppColor.primary, Color(0xFF134E4A)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: <Color>[
+              Color(0xFF111827),
+              Color(0xFF2B3445),
+              Color(0xFFFFEEE2),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
           child: Center(
-            child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.all(24),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 420),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: const Icon(
-                        Icons.bolt_rounded,
-                        size: 48,
-                        color: Colors.white,
-                      ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    width: 92,
+                    height: 92,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      splashData.title,
-                      style: AppTextStyle.heading.copyWith(color: Colors.white),
+                    child: const Icon(
+                      Icons.storefront_rounded,
+                      color: AppColor.primary,
+                      size: 42,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      splashData.subtitle,
-                      style: AppTextStyle.subheading.copyWith(
-                        color: Colors.white.withValues(alpha: 0.88),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    const CircularProgressIndicator(color: Colors.white),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    content.title,
+                    style: AppTextStyle.hero.copyWith(color: Colors.white),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    content.subtitle,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.body.copyWith(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 28),
+                  const CircularProgressIndicator(color: Colors.white),
+                ],
               ),
             ),
           ),
