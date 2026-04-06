@@ -14,7 +14,7 @@ class PersonalDetailsScreen extends StatefulWidget {
 
 class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
   AccountProfileData _profile = const AccountProfileData(
-    name: 'Shob Bazaar',
+    name: 'Optizenqor Store',
     email: 'support@yourapp.com',
     phone: '+880 1700 000000',
     memberSince: 'March 2025',

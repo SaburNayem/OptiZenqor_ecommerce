@@ -4,7 +4,7 @@ class AuthChoiceController {
   const AuthChoiceController();
 
   AuthChoiceModel get content => const AuthChoiceModel(
-    title: 'Welcome To Shob Bazaar',
+    title: 'Welcome To Optizenqor Store',
     subtitle: 'Log In or SIgn Up to continue.',
   );
 }

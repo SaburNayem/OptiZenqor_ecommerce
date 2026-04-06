@@ -22,7 +22,7 @@ class AboutUsScreen extends StatelessWidget {
           const CircleAvatar(radius: 30, child: Icon(Icons.storefront)),
           const SizedBox(height: 10),
           const Text(
-            'Shob Bazaar',
+            'Optizenqor Store',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 5),
@@ -32,7 +32,7 @@ class AboutUsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Shob Bazaar helps users discover products, manage orders, and shop more easily from one mobile experience.',
+            'Optizenqor Store helps users discover products, manage orders, and shop more easily from one mobile experience.',
           ),
           const SizedBox(height: 20),
           _section('Our Mission', const <Widget>[
@@ -65,12 +65,12 @@ class AboutUsScreen extends StatelessWidget {
           _section('Contact Us', const <Widget>[
             ListTile(
               title: Text('Email'),
-              subtitle: Text('support@shobbazaar.com'),
+              subtitle: Text('support@optizenqorstore.com'),
             ),
             ListTile(title: Text('Phone'), subtitle: Text('+880 1700 000000')),
             ListTile(
               title: Text('Website'),
-              subtitle: Text('www.shobbazaar.com'),
+              subtitle: Text('www.optizenqorstore.com'),
             ),
             ListTile(
               title: Text('Address'),

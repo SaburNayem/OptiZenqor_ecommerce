@@ -50,61 +50,71 @@ class SupportBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(color: const Color(0xFF20B2AA)),
-        SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(height: 20),
-              const Text(
-                'Contact Support',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+    return Container(
+      color: AppColor.background,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColor.primary,
+                borderRadius: BorderRadius.circular(24),
               ),
-              const SizedBox(height: 10),
-              const Text(
-                'We\'re here to help! Reach out to us by email, phone, or start a live chat conversation.',
-                style: TextStyle(fontSize: 16, color: Colors.white70),
-              ),
-              const SizedBox(height: 20),
-              _card(
-                context: context,
-                icon: Icons.email,
-                title: 'Email',
-                subtitle: supportEmail,
-                onTap: () => openSupportEmail(context),
-              ),
-              _card(
-                context: context,
-                icon: Icons.phone,
-                title: 'Phone',
-                subtitle: '+1 234 567 890',
-                onTap: () => openSupportDialer(context),
-              ),
-              _card(
-                context: context,
-                icon: Icons.chat,
-                title: 'Live Chat',
-                subtitle: 'Available 24/7 in the app.',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => const LiveChatScreen(),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Contact Support',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                  );
-                },
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'We\'re here to help! Reach out to us by email, phone, or start a live chat conversation.',
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+            _card(
+              context: context,
+              icon: Icons.email,
+              title: 'Email',
+              subtitle: supportEmail,
+              onTap: () => openSupportEmail(context),
+            ),
+            _card(
+              context: context,
+              icon: Icons.phone,
+              title: 'Phone',
+              subtitle: '+1 234 567 890',
+              onTap: () => openSupportDialer(context),
+            ),
+            _card(
+              context: context,
+              icon: Icons.chat,
+              title: 'Live Chat',
+              subtitle: 'Available 24/7 in the app.',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => const LiveChatScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -116,14 +126,28 @@ class SupportBody extends StatelessWidget {
     VoidCallback? onTap,
   }) {
     return Card(
-      color: Colors.white.withValues(alpha: 0.15),
+      color: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(color: AppColor.border),
+      ),
       child: ListTile(
         onTap: onTap,
-        leading: Icon(icon, color: Colors.white),
-        title: Text(title, style: const TextStyle(color: Colors.white)),
-        subtitle: Text(subtitle, style: const TextStyle(color: Colors.white70)),
+        leading: Icon(icon, color: AppColor.primary),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: AppColor.textPrimary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: AppColor.textSecondary),
+        ),
         trailing: onTap != null
-            ? const Icon(Icons.chevron_right, color: Colors.white)
+            ? const Icon(Icons.chevron_right, color: AppColor.primary)
             : null,
       ),
     );

@@ -133,7 +133,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       const SizedBox(height: 12),
                       Center(
                         child: Text(
-                          'Shob Bazaar',
+                          'Optizenqor Store',
                           style: AppTextStyle.label.copyWith(
                             color: Colors.white,
                           ),

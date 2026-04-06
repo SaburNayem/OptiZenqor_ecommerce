@@ -189,7 +189,7 @@ class _AccountActionDetailsScreen extends StatelessWidget {
           const AccountInfoCard(
             title: 'Billing',
             children: <Widget>[
-              AccountLabeledRow(label: 'Billing name', value: 'Shob Bazaar'),
+              AccountLabeledRow(label: 'Billing name', value: 'Optizenqor Store'),
               AccountLabeledRow(
                 label: 'Billing email',
                 value: 'support@yourapp.com',

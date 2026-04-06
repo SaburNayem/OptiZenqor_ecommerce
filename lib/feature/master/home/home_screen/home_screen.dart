@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               )
-            : const Text('Shob Bazaar'),
+            : const Text('Optizenqor Store'),
         actions: <Widget>[
           if (!_isSearchExpanded)
             IconButton(

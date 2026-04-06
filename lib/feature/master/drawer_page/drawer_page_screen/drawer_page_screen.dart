@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:optizenqor/core/constant/app_color.dart';
 import 'package:optizenqor/feature/master/drawer_page/about_us/about_us_screen/about_us_screen.dart';
 import 'package:optizenqor/feature/master/drawer_page/drawer_page_controller/drawer_page_controller.dart';
 import 'package:optizenqor/feature/master/drawer_page/help/help_screen/help_screen.dart';
@@ -44,7 +45,7 @@ class DrawerPageScreen extends StatelessWidget {
 
   Color _appBarColor(String title) {
     if (title == 'Support') {
-      return Colors.transparent;
+      return AppColor.primary;
     }
     if (title == 'Help' || title == 'Review' || title == 'Order History') {
       return Colors.blueAccent;

@@ -36,7 +36,7 @@ class CheckoutScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const <Widget>[
                 Text(
-                  'Shob Bazaar',
+                  'Optizenqor Store',
                   style: TextStyle(fontWeight: FontWeight.w700),
                 ),
                 SizedBox(height: 6),

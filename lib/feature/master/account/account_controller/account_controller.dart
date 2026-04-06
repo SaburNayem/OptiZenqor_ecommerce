@@ -5,7 +5,7 @@ class AccountController {
   const AccountController();
 
   AccountModel get data => const AccountModel(
-    name: 'Shob Bazaar',
+    name: 'Optizenqor Store',
     email: 'support@yourapp.com',
     actions: <AccountActionModel>[
       AccountActionModel(

@@ -74,7 +74,7 @@ class CatalogService {
         rating: 4.5,
         imageUrl:
             'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=900&q=80',
-        description: 'Featured product from the Shob Bazaar shop section.',
+        description: 'Featured product from the Optizenqor Store shop section.',
       ),
       ProductModel(
         id: 'p2',
@@ -85,7 +85,7 @@ class CatalogService {
         rating: 4.5,
         imageUrl:
             'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80',
-        description: 'Featured product from the Shob Bazaar shop section.',
+        description: 'Featured product from the Optizenqor Store shop section.',
       ),
       ProductModel(
         id: 'p3',
@@ -96,7 +96,7 @@ class CatalogService {
         rating: 4.5,
         imageUrl:
             'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=80',
-        description: 'Featured product from the Shob Bazaar shop section.',
+        description: 'Featured product from the Optizenqor Store shop section.',
       ),
       ProductModel(
         id: 'p4',

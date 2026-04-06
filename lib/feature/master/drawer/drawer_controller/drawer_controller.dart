@@ -4,7 +4,7 @@ class MasterDrawerController {
   const MasterDrawerController();
 
   DrawerModel get data => const DrawerModel(
-    name: 'Shob Bazaar',
+    name: 'Optizenqor Store',
     email: 'support@yourapp.com',
     items: <String>[
       'Order History',

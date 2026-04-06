@@ -6,7 +6,7 @@ class SplashController {
   const SplashController();
 
   SplashModel get content => const SplashModel(
-    title: 'Shob Bazaar',
+    title: 'Optizenqor Store',
     subtitle: 'Buy Smartly Buy Genuine',
   );
 
