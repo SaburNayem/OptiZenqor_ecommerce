@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:optizenqor/core/widget/bottom_nav_bar.dart';
+import 'package:optizenqor/feature/master/navigation/navigation_controller/navigation_cubit.dart';
 import 'package:optizenqor/feature/master/navigation/navigation_controller/navigation_controller.dart';
+import 'package:optizenqor/feature/master/navigation/navigation_controller/navigation_state.dart';
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({
@@ -17,14 +20,12 @@ class NavigationScreen extends StatefulWidget {
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
-  late int _currentIndex;
   final NavigationController _controller = const NavigationController();
   late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
   }
 
@@ -36,32 +37,37 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = _controller.pages(initialShopQuery: widget.initialShopQuery);
+    final List<Widget> pages = _controller.pages(
+      initialShopQuery: widget.initialShopQuery,
+    );
     final items = _controller.items;
 
-    return Scaffold(
-      extendBody: true,
-      body: SafeArea(
-        bottom: false,
-        child: PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: pages,
-          onPageChanged: (int index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-        ),
-      ),
-      bottomNavigationBar: AppBottomNavBar(
-        currentIndex: _currentIndex,
-        items: items,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          _pageController.jumpToPage(index);
+    return BlocProvider<NavigationCubit>(
+      create: (_) => NavigationCubit(initialIndex: widget.initialIndex),
+      child: BlocBuilder<NavigationCubit, NavigationState>(
+        builder: (BuildContext context, NavigationState state) {
+          return Scaffold(
+            extendBody: true,
+            body: SafeArea(
+              bottom: false,
+              child: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: pages,
+                onPageChanged: (int index) {
+                  context.read<NavigationCubit>().selectTab(index);
+                },
+              ),
+            ),
+            bottomNavigationBar: AppBottomNavBar(
+              currentIndex: state.currentIndex,
+              items: items,
+              onTap: (int index) {
+                context.read<NavigationCubit>().selectTab(index);
+                _pageController.jumpToPage(index);
+              },
+            ),
+          );
         },
       ),
     );

@@ -1,399 +1,303 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:optizenqor/app_route/app_route.dart';
 import 'package:optizenqor/core/constant/app_color.dart';
 import 'package:optizenqor/core/constant/text_style.dart';
 import 'package:optizenqor/core/widget/button_widget.dart';
 import 'package:optizenqor/core/widget/custom_appbar.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_controller/product_details_controller.dart';
+import 'package:optizenqor/feature/master/product_details/product_details_controller/product_details_cubit.dart';
+import 'package:optizenqor/feature/master/product_details/product_details_controller/product_details_state.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_model/cart_item_model.dart';
 import 'package:optizenqor/feature/master/product_details/product_details_model/product_model.dart';
 
-class ProductDetailsScreen extends StatefulWidget {
+class ProductDetailsScreen extends StatelessWidget {
   const ProductDetailsScreen({required this.product, super.key});
 
   final ProductModel product;
 
   @override
-  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider<ProductDetailsCubit>(
+      create: (_) => ProductDetailsCubit(product),
+      child: _ProductDetailsView(product: product),
+    );
+  }
 }
 
-class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  int _quantity = 1;
-  bool _isFavorite = false;
-  late final List<_ReviewItem> _reviews;
+class _ProductDetailsView extends StatelessWidget {
+  const _ProductDetailsView({required this.product});
 
-  @override
-  void initState() {
-    super.initState();
-    _reviews = _buildInitialReviews(widget.product);
-  }
+  final ProductModel product;
 
-  double get _averageRating {
-    if (_reviews.isEmpty) {
-      return widget.product.rating;
-    }
-    final double total = _reviews.fold<double>(
-      0,
-      (double sum, _ReviewItem review) => sum + review.rating,
-    );
-    return total / _reviews.length;
-  }
-
-  void _addReply(String reviewId, String message) {
-    final int reviewIndex = _reviews.indexWhere(
-      (_ReviewItem item) => item.id == reviewId,
-    );
-    if (reviewIndex == -1) {
-      return;
-    }
-    _reviews[reviewIndex].replies.add(
-      _ReplyItem(author: 'You', message: message),
-    );
-  }
-
-  void _openReviewsSheet() {
+  void _openReviewsSheet(BuildContext context, ProductDetailsState state) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (BuildContext context) => _ReviewsBottomSheet(
-        productName: widget.product.name,
-        averageRating: _averageRating,
-        reviews: _reviews,
+      builder: (BuildContext bottomSheetContext) => _ReviewsBottomSheet(
+        productName: product.name,
+        averageRating: state.averageRating(product),
+        reviews: state.reviews,
         onShareReview: (int rating, String message) {
-          setState(() {
-            _reviews.insert(
-              0,
-              _ReviewItem(
-                id: DateTime.now().microsecondsSinceEpoch.toString(),
-                author: 'You',
-                rating: rating.toDouble(),
-                review: message,
-                timeAgo: 'Just now',
-              ),
-            );
-          });
+          bottomSheetContext.read<ProductDetailsCubit>().shareReview(
+            rating,
+            message,
+          );
         },
         onReply: (String reviewId, String message) {
-          setState(() {
-            _addReply(reviewId, message);
-          });
+          bottomSheetContext.read<ProductDetailsCubit>().addReply(
+            reviewId,
+            message,
+          );
         },
       ),
     );
   }
 
-  List<CartItemModel> get _checkoutItems => <CartItemModel>[
-    CartItemModel(product: widget.product, quantity: _quantity),
-  ];
-
-  void _openCheckout() {
+  void _openCheckout(BuildContext context, int quantity) {
     Navigator.pushNamed(
       context,
       AppRoute.checkout,
-      arguments: _checkoutItems,
+      arguments: <CartItemModel>[
+        CartItemModel(product: product, quantity: quantity),
+      ],
     );
   }
 
-  void _addToCart() {
+  void _addToCart(BuildContext context, int quantity) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${widget.product.name} x$_quantity added to cart'),
-      ),
+      SnackBar(content: Text('${product.name} x$quantity added to cart')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     const ProductDetailsController controller = ProductDetailsController();
-    final List<String> highlights = controller.getHighlights(widget.product);
-    final double total = widget.product.price * _quantity;
+    final List<String> highlights = controller.getHighlights(product);
 
-    return Scaffold(
-      appBar: AppCustomAppBar(
-        title: 'Product Details',
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _isFavorite = !_isFavorite;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    _isFavorite
-                        ? 'Added to favorites'
-                        : 'Removed from favorites',
-                  ),
-                ),
-              );
-            },
-            icon: Icon(
-              _isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: _isFavorite ? Colors.red : null,
-            ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(28),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Image.network(
-                  widget.product.imageUrl,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(widget.product.name, style: AppTextStyle.heading),
-                ),
-                Text(
-                  '\$${widget.product.price.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: AppColor.accent,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(widget.product.categoryName, style: AppTextStyle.label),
-            const SizedBox(height: 12),
-            InkWell(
-              onTap: _openReviewsSheet,
-              borderRadius: BorderRadius.circular(20),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
+    return BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
+      builder: (BuildContext context, ProductDetailsState state) {
+        final double total = product.price * state.quantity;
+
+        return Scaffold(
+          appBar: AppCustomAppBar(
+            title: 'Product Details',
+            actions: <Widget>[
+              IconButton(
+                onPressed: () {
+                  context.read<ProductDetailsCubit>().toggleFavorite();
+                  final bool isFavorite =
+                      context.read<ProductDetailsCubit>().state.isFavorite;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isFavorite
+                            ? 'Added to favorites'
+                            : 'Removed from favorites',
                       ),
-                      decoration: BoxDecoration(
-                        color: const Color(0x1AFF6B35),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text('${_averageRating.toStringAsFixed(1)} ★'),
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      '${_reviews.length} reviews',
-                      style: AppTextStyle.body,
-                    ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.keyboard_arrow_up_rounded,
-                      color: AppColor.primary,
-                    ),
-                  ],
+                  );
+                },
+                icon: Icon(
+                  state.isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: state.isFavorite ? Colors.red : null,
                 ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            Text(widget.product.description, style: AppTextStyle.body),
-            const SizedBox(height: 18),
-            Row(
-              children: <Widget>[
-                const Text('Quantity', style: AppTextStyle.title),
-                const SizedBox(width: 16),
-                IconButton(
-                  onPressed: _quantity > 1
-                      ? () {
-                          setState(() {
-                            _quantity--;
-                          });
-                        }
-                      : null,
-                  icon: const Icon(Icons.remove_circle_outline),
-                ),
-                Text('$_quantity', style: AppTextStyle.title),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _quantity++;
-                    });
-                  },
-                  icon: const Icon(Icons.add_circle_outline),
-                ),
-                const Spacer(),
-                Text(
-                  'Total \$${total.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColor.primary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            ...highlights.map(
-              (String item) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: <Widget>[
-                    const Icon(
-                      Icons.check_circle,
-                      color: AppColor.success,
-                      size: 18,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(child: Text(item, style: AppTextStyle.body)),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 180),
-          ],
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColor.surface,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColor.border),
-            boxShadow: const <BoxShadow>[
-              BoxShadow(
-                color: Color(0x14000000),
-                blurRadius: 18,
-                offset: Offset(0, 8),
               ),
             ],
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Total',
-                        style: AppTextStyle.body.copyWith(
-                          color: Colors.black54,
-                        ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(28),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.network(product.imageUrl, fit: BoxFit.cover),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: <Widget>[
+                    Expanded(child: Text(product.name, style: AppTextStyle.heading)),
+                    Text(
+                      '\$${product.price.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: AppColor.accent,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '\$${total.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(product.categoryName, style: AppTextStyle.label),
+                const SizedBox(height: 12),
+                InkWell(
+                  onTap: () => _openReviewsSheet(context, state),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0x1AFF6B35),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            '${state.averageRating(product).toStringAsFixed(1)} ★',
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          '${state.reviews.length} reviews',
+                          style: AppTextStyle.body,
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.keyboard_arrow_up_rounded,
                           color: AppColor.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(product.description, style: AppTextStyle.body),
+                const SizedBox(height: 18),
+                Row(
+                  children: <Widget>[
+                    const Text('Quantity', style: AppTextStyle.title),
+                    const SizedBox(width: 16),
+                    IconButton(
+                      onPressed: state.quantity > 1
+                          ? () =>
+                              context.read<ProductDetailsCubit>().decrementQuantity()
+                          : null,
+                      icon: const Icon(Icons.remove_circle_outline),
+                    ),
+                    Text('${state.quantity}', style: AppTextStyle.title),
+                    IconButton(
+                      onPressed: () =>
+                          context.read<ProductDetailsCubit>().incrementQuantity(),
+                      icon: const Icon(Icons.add_circle_outline),
+                    ),
+                    const Spacer(),
+                    Text(
+                      'Total \$${total.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColor.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18),
+                ...highlights.map(
+                  (String item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      children: <Widget>[
+                        const Icon(
+                          Icons.check_circle,
+                          color: AppColor.success,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(child: Text(item, style: AppTextStyle.body)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 180),
+              ],
+            ),
+          ),
+          bottomNavigationBar: SafeArea(
+            minimum: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColor.surface,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColor.border),
+                boxShadow: const <BoxShadow>[
+                  BoxShadow(
+                    color: Color(0x14000000),
+                    blurRadius: 18,
+                    offset: Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Total',
+                            style: AppTextStyle.body.copyWith(
+                              color: Colors.black54,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '\$${total.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: AppColor.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: AppButton(
+                          title: 'Checkout',
+                          onPressed: () => _openCheckout(context, state.quantity),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: AppButton(
-                      title: 'Checkout',
-                      onPressed: _openCheckout,
-                    ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: AppButton(
+                          title: 'Add Cart',
+                          isOutlined: true,
+                          onPressed: () => _addToCart(context, state.quantity),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: AppButton(
+                          title: 'Buy',
+                          onPressed: () => _openCheckout(context, state.quantity),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: AppButton(
-                      title: 'Add Cart',
-                      isOutlined: true,
-                      onPressed: _addToCart,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: AppButton(
-                      title: 'Buy',
-                      onPressed: _openCheckout,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
-}
-
-List<_ReviewItem> _buildInitialReviews(ProductModel product) {
-  return <_ReviewItem>[
-    _ReviewItem(
-      id: '${product.id}-1',
-      author: 'Ariana',
-      rating: 5,
-      review:
-          'The quality feels premium and it matched the product photos perfectly.',
-      timeAgo: '2 days ago',
-      replies: <_ReplyItem>[
-        const _ReplyItem(
-          author: 'Shop Support',
-          message: 'Thanks for the lovely feedback.',
-        ),
-      ],
-    ),
-    _ReviewItem(
-      id: '${product.id}-2',
-      author: 'Nabil',
-      rating: 4,
-      review:
-          'Really good ${product.categoryName.toLowerCase()} item. Delivery was quick and packaging was neat.',
-      timeAgo: '5 days ago',
-    ),
-    _ReviewItem(
-      id: '${product.id}-3',
-      author: 'Sadia',
-      rating: 5,
-      review:
-          'I would buy ${product.name} again. The finish and overall comfort are excellent.',
-      timeAgo: '1 week ago',
-    ),
-  ];
-}
-
-class _ReviewItem {
-  _ReviewItem({
-    required this.id,
-    required this.author,
-    required this.rating,
-    required this.review,
-    required this.timeAgo,
-    List<_ReplyItem>? replies,
-  }) : replies = replies ?? <_ReplyItem>[];
-
-  final String id;
-  final String author;
-  final double rating;
-  final String review;
-  final String timeAgo;
-  final List<_ReplyItem> replies;
-}
-
-class _ReplyItem {
-  const _ReplyItem({required this.author, required this.message});
-
-  final String author;
-  final String message;
 }
 
 class _ReviewsBottomSheet extends StatefulWidget {
@@ -407,7 +311,7 @@ class _ReviewsBottomSheet extends StatefulWidget {
 
   final String productName;
   final double averageRating;
-  final List<_ReviewItem> reviews;
+  final List<ReviewItem> reviews;
   final void Function(int rating, String message) onShareReview;
   final void Function(String reviewId, String message) onReply;
 
@@ -425,7 +329,7 @@ class _ReviewsBottomSheetState extends State<_ReviewsBottomSheet> {
   void didUpdateWidget(covariant _ReviewsBottomSheet oldWidget) {
     super.didUpdateWidget(oldWidget);
     final Set<String> activeIds = widget.reviews
-        .map((_ReviewItem review) => review.id)
+        .map((ReviewItem review) => review.id)
         .toSet();
     final List<String> removedIds = _replyControllers.keys
         .where((String id) => !activeIds.contains(id))
@@ -471,7 +375,7 @@ class _ReviewsBottomSheetState extends State<_ReviewsBottomSheet> {
     );
   }
 
-  void _handleReply(_ReviewItem review) {
+  void _handleReply(ReviewItem review) {
     final TextEditingController controller = _replyControllerFor(review.id);
     final String message = controller.text.trim();
     if (message.isEmpty) {
@@ -642,12 +546,9 @@ class _ReviewsBottomSheetState extends State<_ReviewsBottomSheet> {
                         ),
                       ),
                       const SizedBox(height: 22),
-                      const Text(
-                        'All reviews',
-                        style: AppTextStyle.title,
-                      ),
+                      const Text('All reviews', style: AppTextStyle.title),
                       const SizedBox(height: 12),
-                      ...widget.reviews.map((_ReviewItem review) {
+                      ...widget.reviews.map((ReviewItem review) {
                         final TextEditingController replyController =
                             _replyControllerFor(review.id);
 
@@ -717,7 +618,7 @@ class _ReviewsBottomSheetState extends State<_ReviewsBottomSheet> {
                                 if (review.replies.isNotEmpty) ...<Widget>[
                                   const SizedBox(height: 14),
                                   ...review.replies.map(
-                                    (_ReplyItem reply) => Container(
+                                    (ReplyItem reply) => Container(
                                       margin: const EdgeInsets.only(top: 10),
                                       padding: const EdgeInsets.all(14),
                                       decoration: BoxDecoration(
