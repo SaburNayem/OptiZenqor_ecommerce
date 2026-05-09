@@ -4,7 +4,7 @@ import 'package:optizenqor/http_mathod/service_model/service_model.dart';
 
 class ForgotPasswordController {
   ForgotPasswordController({AuthService? authService})
-    : _authService = authService ?? const AuthService();
+    : _authService = authService ?? AuthService();
 
   final AuthService _authService;
 

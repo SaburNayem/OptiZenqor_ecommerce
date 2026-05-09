@@ -8,11 +8,13 @@ import 'package:optizenqor/feature/authentication/reset_password/reset_password_
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({
     this.account,
+    this.code,
     this.fromAccount = false,
     super.key,
   });
 
   final String? account;
+  final String? code;
   final bool fromAccount;
 
   @override
@@ -47,6 +49,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     });
 
     final result = await _controller.resetPassword(
+      email: widget.account ?? '',
+      code: widget.code ?? '',
       password: _passwordController.text.trim(),
     );
 

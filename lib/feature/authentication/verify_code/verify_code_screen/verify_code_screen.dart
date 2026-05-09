@@ -37,6 +37,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     });
 
     final result = await _controller.verifyCode(
+      email: widget.account ?? '',
       code: _codeController.text.trim(),
     );
 
@@ -56,7 +57,10 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
       Navigator.pushNamed(
         context,
         AppRoute.resetPassword,
-        arguments: widget.account,
+        arguments: <String, dynamic>{
+          'account': widget.account,
+          'code': _codeController.text.trim(),
+        },
       );
     }
   }

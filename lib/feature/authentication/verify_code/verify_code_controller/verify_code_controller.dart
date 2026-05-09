@@ -4,7 +4,7 @@ import 'package:optizenqor/http_mathod/service_model/service_model.dart';
 
 class VerifyCodeController {
   VerifyCodeController({AuthService? authService})
-    : _authService = authService ?? const AuthService();
+    : _authService = authService ?? AuthService();
 
   final AuthService _authService;
 
@@ -15,8 +15,9 @@ class VerifyCodeController {
   );
 
   Future<ServiceModel<Map<String, dynamic>>> verifyCode({
+    required String email,
     required String code,
   }) {
-    return _authService.verifyResetCode(code: code);
+    return _authService.verifyResetCode(email: email, code: code);
   }
 }

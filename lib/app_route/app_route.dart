@@ -58,6 +58,7 @@ class AppRoute {
         );
       case resetPassword:
         String? account;
+        String? code;
         bool fromAccount = false;
 
         if (settings.arguments is String) {
@@ -66,11 +67,16 @@ class AppRoute {
           final Map<String, dynamic> args =
               settings.arguments! as Map<String, dynamic>;
           account = args['account'] as String?;
+          code = args['code'] as String?;
           fromAccount = args['fromAccount'] as bool? ?? false;
         }
 
         return _buildRoute(
-          ResetPasswordScreen(account: account, fromAccount: fromAccount),
+          ResetPasswordScreen(
+            account: account,
+            code: code,
+            fromAccount: fromAccount,
+          ),
           settings,
         );
       case mainShell:

@@ -4,7 +4,7 @@ import 'package:optizenqor/http_mathod/service_model/service_model.dart';
 
 class ResetPasswordController {
   ResetPasswordController({AuthService? authService})
-    : _authService = authService ?? const AuthService();
+    : _authService = authService ?? AuthService();
 
   final AuthService _authService;
 
@@ -15,8 +15,14 @@ class ResetPasswordController {
   );
 
   Future<ServiceModel<Map<String, dynamic>>> resetPassword({
+    required String email,
+    required String code,
     required String password,
   }) {
-    return _authService.resetPassword(password: password);
+    return _authService.resetPassword(
+      email: email,
+      code: code,
+      password: password,
+    );
   }
 }

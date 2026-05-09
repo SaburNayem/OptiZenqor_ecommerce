@@ -8,7 +8,7 @@ class SignInController {
   SignInController({
     AuthService? authService,
     LocalAuthentication? localAuthentication,
-  }) : _authService = authService ?? const AuthService(),
+  }) : _authService = authService ?? AuthService(),
        _localAuthentication = localAuthentication ?? LocalAuthentication();
 
   final AuthService _authService;
